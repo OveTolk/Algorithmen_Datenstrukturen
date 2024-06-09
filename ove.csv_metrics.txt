@@ -1,0 +1,8 @@
+Metriken der Algorithmen:
+Bubble Sort:
+Anzahl der Zeilen: 21
+Anzahl der Spalten: 5
+
+Selection Sort:
+Anzahl der Zeilen: 21
+Anzahl der Spalten: 5
