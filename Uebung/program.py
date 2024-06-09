@@ -1,4 +1,5 @@
 import pandas as pd
+import time
 
 # Einlesen der Dateien mit Überprüfung auf gültige Eingaben
 def einlesen():
@@ -71,8 +72,8 @@ def mergeTabs(tab1, tab2):
 
 # Auswahl des Attributs, nach dem sortiert werden soll
 def attribute_waehlen(tab1, tab2):
-    att1 = tab1.columns
-    att2 = tab2.columns
+    att1 = tab1.columns.tolist()
+    att2 = tab2.columns.tolist()
     print(f"Die Attribute der ersten Tabelle sind: {att1}")
     print(f"Die Attribute der zweiten Tabelle sind: {att2}")
     gewaehltes_att = input(f"Bitte wählen Sie ein Attribut aus den Tabellen: ")
@@ -96,22 +97,38 @@ def sortierReihenfolge():
 # Bubble Sort Algorithmus
 def bubblesort(df, column, ascending=True):
     df = df.copy()
-    for i in range(len(df)):
-        for j in range(0, len(df)-i-1):
+    n = len(df)
+    operation_count = 0
+    start_time = time.time()
+
+    for i in range(n):
+        for j in range(0, n-i-1):
+            operation_count += 1
             if (df.iloc[j][column] > df.iloc[j+1][column]) == ascending:
                 df.iloc[j], df.iloc[j+1] = df.iloc[j+1], df.iloc[j]
-    return df
+
+    end_time = time.time()
+    duration = end_time - start_time
+    return df, operation_count, duration
 
 # Selection Sort Algorithmus
 def selectionsort(df, column, ascending=True):
     df = df.copy()
-    for i in range(len(df)):
+    n = len(df)
+    operation_count = 0
+    start_time = time.time()
+
+    for i in range(n):
         min_idx = i
-        for j in range(i+1, len(df)):
+        for j in range(i+1, n):
+            operation_count += 1
             if (df.iloc[j][column] < df.iloc[min_idx][column]) == ascending:
                 min_idx = j
         df.iloc[i], df.iloc[min_idx] = df.iloc[min_idx], df.iloc[i]
-    return df
+
+    end_time = time.time()
+    duration = end_time - start_time
+    return df, operation_count, duration
 
 # Hauptfunktion
 def main():
@@ -127,7 +144,7 @@ def main():
 
     # Ausführung von Bubble-Sort
     try:
-        sorted_bubble = bubblesort(combined, sort_attribut, ascending=sortier_reihenfolge)
+        sorted_bubble, bubble_operations, bubble_duration = bubblesort(combined, sort_attribut, ascending=sortier_reihenfolge)
         sorted_bubble.to_csv(f"{output_name}_bubblesort.csv", index=False)
         print(f"{output_name}_bubblesort.csv gespeichert!")
 
@@ -142,7 +159,7 @@ def main():
 
     # Ausführung von Selection-Sort
     try:
-        sorted_selection = selectionsort(combined, sort_attribut, ascending=sortier_reihenfolge)
+        sorted_selection, selection_operations, selection_duration = selectionsort(combined, sort_attribut, ascending=sortier_reihenfolge)
         sorted_selection.to_csv(f"{output_name}_selectionsort.csv", index=False)
         print(f"{output_name}_selectionsort.csv gespeichert!")
     
@@ -161,10 +178,14 @@ def main():
             f.write("Metriken der Algorithmen:\n")
             f.write("Bubble Sort:\n")
             f.write(f"Anzahl der Zeilen: {len(sorted_bubble)}\n")
-            f.write(f"Anzahl der Spalten: {len(sorted_bubble.columns)}\n\n")
+            f.write(f"Anzahl der Spalten: {len(sorted_bubble.columns)}\n")
+            f.write(f"Anzahl der Vorgänge: {bubble_operations}\n")
+            f.write(f"Benötigte Zeit: {bubble_duration:.6f} Sekunden\n\n")
             f.write("Selection Sort:\n")
             f.write(f"Anzahl der Zeilen: {len(sorted_selection)}\n")
             f.write(f"Anzahl der Spalten: {len(sorted_selection.columns)}\n")
+            f.write(f"Anzahl der Vorgänge: {selection_operations}\n")
+            f.write(f"Benötigte Zeit: {selection_duration:.6f} Sekunden\n")
         print(f"Metriken gespeichert in: {metrics_file}")
     else:
         print("Metriken wurden nicht gespeichert.")
