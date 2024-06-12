@@ -104,6 +104,7 @@ def bubblesort(df, column, ascending=True):
     for i in range(n):
         for j in range(0, n-i-1):
             operation_count += 1
+            print(f"Es läuft noch! Count {operation_count}")
             if (df.iloc[j][column] > df.iloc[j+1][column]) == ascending:
                 df.iloc[j], df.iloc[j+1] = df.iloc[j+1], df.iloc[j]
 
@@ -122,6 +123,7 @@ def selectionsort(df, column, ascending=True):
         min_idx = i
         for j in range(i+1, n):
             operation_count += 1
+            print(f"Es läuft noch! Count {operation_count}")
             if (df.iloc[j][column] < df.iloc[min_idx][column]) == ascending:
                 min_idx = j
         df.iloc[i], df.iloc[min_idx] = df.iloc[min_idx], df.iloc[i]
